@@ -3,7 +3,7 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const WEBHOOK_URL = 'https://discord.com/api/webhooks/1511778105155391638/BUmeXVVzQ-U_StFXQy9L9K7GDwch_rxpQQN66_IpKE4S_zlvuEyJz99yt_cpCRqPcIOp';
+const WEBHOOK_URL = 'https://discord.com/api/webhooks/1511788679331446825/qqblSPt4T8b_kPG3eq8JclP3FzzuXScDT7vrIF2ue3omjAohpeKMSsBN8h1qxRGOD1xL';
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
