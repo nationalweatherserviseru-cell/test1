@@ -34,12 +34,26 @@
             z-index: 0;
         }
 
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0f;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         .container {
             position: relative;
             z-index: 1;
             max-width: 680px;
             width: 92%;
             margin: 40px auto;
+            display: none;
         }
 
         .header-title {
@@ -270,6 +284,8 @@
     </style>
 </head>
 <body id="bodyElement">
+    <div id="loadingOverlay"></div>
+
     <div class="container" id="mainContainer">
         <h1 class="header-title">Meta ARTS Application</h1>
         
@@ -385,16 +401,25 @@
         const userHWID = generateHWID();
         const bodyElement = document.getElementById('bodyElement');
         const mainContainer = document.getElementById('mainContainer');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const forbiddenContainer = document.getElementById('forbiddenContainer');
 
         fetch('black.json')
             .then(response => response.json())
             .then(blacklistedHWIDs => {
                 if (blacklistedHWIDs.includes(userHWID)) {
-                    mainContainer.style.display = 'none';
                     bodyElement.classList.add('blocked');
+                    forbiddenContainer.style.display = 'flex';
+                } else {
+                    mainContainer.style.display = 'block';
                 }
             })
-            .catch(() => {});
+            .catch(() => {
+                mainContainer.style.display = 'block';
+            })
+            .finally(() => {
+                loadingOverlay.style.display = 'none';
+            });
 
         const aboutTextarea = document.getElementById('about');
         const wordCountDisplay = document.getElementById('wordCount');
