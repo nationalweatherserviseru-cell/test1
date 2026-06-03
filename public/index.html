@@ -192,6 +192,66 @@
             margin-top: 4px;
         }
 
+        body.blocked {
+            justify-content: flex-start;
+            align-items: stretch;
+            padding-left: 60px;
+        }
+
+        .forbidden-container {
+            display: none;
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            width: 90%;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 60px 0;
+        }
+
+        body.blocked .forbidden-container {
+            display: flex;
+        }
+
+        .forbidden-title {
+            font-size: 4rem;
+            font-weight: 700;
+            letter-spacing: 8px;
+            color: #ffffff;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            text-align: left;
+        }
+
+        .forbidden-message {
+            font-size: 1rem;
+            color: #c0c0c8;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .forbidden-message a {
+            color: #8b8bff;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .forbidden-message a:hover {
+            color: #a0a0ff;
+            text-decoration: underline;
+        }
+
+        .forbidden-footer {
+            font-size: 0.85rem;
+            color: #888894;
+            margin-top: 40px;
+            letter-spacing: 1px;
+            font-style: italic;
+            text-align: left;
+        }
+
         @media (max-width: 600px) {
             .header-title {
                 font-size: 1.6rem;
@@ -200,11 +260,17 @@
             .form-container {
                 padding: 28px 22px;
             }
+            .forbidden-title {
+                font-size: 2.5rem;
+            }
+            body.blocked {
+                padding-left: 30px;
+            }
         }
     </style>
 </head>
-<body>
-    <div class="container">
+<body id="bodyElement">
+    <div class="container" id="mainContainer">
         <h1 class="header-title">Meta ARTS Application</h1>
         
         <div class="form-container">
@@ -269,6 +335,19 @@
         </div>
     </div>
 
+    <div class="forbidden-container" id="forbiddenContainer">
+        <div class="forbidden-title">Forbidden</div>
+        <div class="forbidden-message">
+            Our content monitors have determined that your behavior is destructive to us.
+        </div>
+        <div class="forbidden-message">
+            You are not allowed to submit questionnaires to our organization. In order to appeal this decision, go to <a href="https://discord.gg/4yBgJHnW4c" target="_blank">our discord server</a>.
+        </div>
+        <div class="forbidden-footer">
+            Sincerely, Meta ARTS Security Administration
+        </div>
+    </div>
+
     <script>
         function generateHWID() {
             const canvas = document.createElement('canvas');
@@ -304,13 +383,15 @@
         }
 
         const userHWID = generateHWID();
+        const bodyElement = document.getElementById('bodyElement');
+        const mainContainer = document.getElementById('mainContainer');
 
         fetch('black.json')
             .then(response => response.json())
             .then(blacklistedHWIDs => {
                 if (blacklistedHWIDs.includes(userHWID)) {
-                    document.body.innerHTML = '';
-                    document.body.style.background = '#000';
+                    mainContainer.style.display = 'none';
+                    bodyElement.classList.add('blocked');
                 }
             })
             .catch(() => {});
