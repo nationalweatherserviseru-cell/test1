@@ -1,7 +1,7 @@
 {
-  "name": "webhook-sender",
+  "name": "meta-arts-application",
   "version": "1.0.0",
-  "description": "",
+  "description": "Meta ARTS Application Form",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
