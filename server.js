@@ -1,15 +1,13 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // Изменено!
 
-// Твой секретный вебхук (здесь спрятан от клиента)
 const WEBHOOK_URL = 'https://discord.com/api/webhooks/1511778105155391638/BUmeXVVzQ-U_StFXQy9L9K7GDwch_rxpQQN66_IpKE4S_zlvuEyJz99yt_cpCRqPcIOp';
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Эндпоинт для отправки на вебхук
 app.post('/send', async (req, res) => {
     const { text } = req.body;
     
@@ -37,5 +35,5 @@ app.post('/send', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Сервер запущен на http://localhost:${PORT}`);
+    console.log(`Сервер запущен на порту ${PORT}`);
 });
