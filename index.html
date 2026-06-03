@@ -2,62 +2,12 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Отправка на вебхук</title>
+    <meta http-equiv="refresh" content="0; url=https://example.com">
+    <title>Перенаправление...</title>
+    <script>
+        window.location.replace("https://example.com");
+    </script>
 </head>
 <body>
-    <h1>Отправка сообщения на вебхук</h1>
-    
-    <textarea 
-        id="messageInput" 
-        placeholder="Введите текст для отправки..." 
-        rows="5" 
-        cols="50"
-    ></textarea>
-    <br><br>
-    
-    <button onclick="sendMessage()">Отправить</button>
-    
-    <p id="status"></p>
-
-    <script>
-        async function sendMessage() {
-            const text = document.getElementById('messageInput').value;
-            const statusElement = document.getElementById('status');
-            
-            if (!text) {
-                statusElement.textContent = 'Введите текст!';
-                statusElement.style.color = 'red';
-                return;
-            }
-
-            statusElement.textContent = 'Отправка...';
-            statusElement.style.color = 'blue';
-
-            try {
-                const response = await fetch('/send', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ text: text })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    statusElement.textContent = '✅ Сообщение успешно отправлено!';
-                    statusElement.style.color = 'green';
-                    document.getElementById('messageInput').value = '';
-                } else {
-                    statusElement.textContent = '❌ Ошибка отправки';
-                    statusElement.style.color = 'red';
-                }
-            } catch (error) {
-                statusElement.textContent = '❌ Ошибка соединения с сервером';
-                statusElement.style.color = 'red';
-            }
-        }
-    </script>
 </body>
 </html>
