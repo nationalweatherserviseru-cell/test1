@@ -1,63 +1,441 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Отправка на вебхук</title>
+    <title>Meta ARTS Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0a0a0f;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('background.png') center/cover no-repeat;
+            opacity: 0.12;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 680px;
+            width: 92%;
+            margin: 40px auto;
+        }
+
+        .header-title {
+            text-align: center;
+            color: rgba(180, 180, 190, 0.35);
+            font-size: 2.4rem;
+            font-weight: 300;
+            letter-spacing: 6px;
+            margin-bottom: 45px;
+            text-transform: uppercase;
+            user-select: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 25px;
+        }
+
+        .form-container {
+            background: rgba(18, 18, 24, 0.85);
+            backdrop-filter: blur(24px);
+            border-radius: 4px;
+            padding: 48px 44px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .form-group {
+            margin-bottom: 28px;
+        }
+
+        label {
+            display: block;
+            color: #8a8a9a;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            color: #d0d0d8;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: border-color 0.2s ease, background 0.2s ease;
+            outline: none;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 130px;
+            line-height: 1.6;
+        }
+
+        select {
+            appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%238a8a9a' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 32px;
+            margin-top: 10px;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: #b0b0be;
+            text-transform: none;
+            font-weight: 400;
+            letter-spacing: 0;
+            font-size: 0.9rem;
+        }
+
+        input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: #ffffff;
+            opacity: 0.7;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #c0c0cc;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 3px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+            margin-top: 14px;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.14);
+            border-color: rgba(255, 255, 255, 0.35);
+            color: #ffffff;
+        }
+
+        .submit-btn:active:not(:disabled) {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.06);
+            color: #686870;
+        }
+
+        #status {
+            text-align: center;
+            margin-top: 22px;
+            font-weight: 400;
+            font-size: 0.85rem;
+            min-height: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .word-count {
+            font-size: 0.75rem;
+            color: #6a6a78;
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 600px) {
+            .header-title {
+                font-size: 1.6rem;
+                letter-spacing: 4px;
+            }
+            .form-container {
+                padding: 28px 22px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Отправка сообщения на вебхук</h1>
-    
-    <textarea 
-        id="messageInput" 
-        placeholder="Введите текст для отправки..." 
-        rows="5" 
-        cols="50"
-    ></textarea>
-    <br><br>
-    
-    <button onclick="sendMessage()">Отправить</button>
-    
-    <p id="status"></p>
+    <div class="container">
+        <h1 class="header-title">Meta ARTS Application</h1>
+        
+        <div class="form-container">
+            <form id="applicationForm">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Age</label>
+                    <input type="number" id="age" name="age" placeholder="Enter your age" min="1" max="150" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Roblox Username</label>
+                    <input type="text" id="roblox" name="roblox" placeholder="Enter your Roblox username" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Discord Username</label>
+                    <input type="text" id="discord" name="discord" placeholder="Enter your Discord username" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Fields of Expertise</label>
+                    <input type="text" id="skills" name="skills" placeholder="Scripting, Building, UI Design, Modeling, Animation, etc." required>
+                </div>
+
+                <div class="form-group">
+                    <label>Personal Statement</label>
+                    <textarea id="about" name="about" placeholder="Provide a detailed description of your background, skills, and professional experience. Minimum 25 words required." required></textarea>
+                    <div class="word-count" id="wordCount">0 words</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Do you have a microphone?</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="microphone" value="Yes" required> Yes
+                        </label>
+                        <label>
+                            <input type="radio" name="microphone" value="No" required> No
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Roblox Studio Experience</label>
+                    <input type="text" id="experience" name="experience" placeholder="Duration of your experience with Roblox Studio" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Published Projects</label>
+                    <textarea id="games" name="games" placeholder="List any published games or projects with relevant details" rows="3"></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">Submit Application</button>
+            </form>
+            
+            <p id="status"></p>
+        </div>
+    </div>
 
     <script>
-        async function sendMessage() {
-            const text = document.getElementById('messageInput').value;
-            const statusElement = document.getElementById('status');
+        function generateHWID() {
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl');
+            let debugInfo = '';
+            if (gl) {
+                debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+            }
             
-            if (!text) {
-                statusElement.textContent = 'Введите текст!';
-                statusElement.style.color = 'red';
+            const components = [
+                navigator.userAgent,
+                navigator.language,
+                screen.colorDepth,
+                screen.width + 'x' + screen.height,
+                new Date().getTimezoneOffset(),
+                !!window.sessionStorage,
+                !!window.localStorage,
+                navigator.hardwareConcurrency || 'unknown',
+                navigator.platform,
+                debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : 'no-webgl',
+                navigator.deviceMemory || 'unknown'
+            ];
+            
+            let hash = 0;
+            const str = components.join('###');
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            
+            return 'HWID-' + Math.abs(hash).toString(16).toUpperCase().padStart(8, '0');
+        }
+
+        const userHWID = generateHWID();
+
+        fetch('black.json')
+            .then(response => response.json())
+            .then(blacklistedHWIDs => {
+                if (blacklistedHWIDs.includes(userHWID)) {
+                    document.body.innerHTML = '';
+                    document.body.style.background = '#000';
+                }
+            })
+            .catch(() => {});
+
+        const aboutTextarea = document.getElementById('about');
+        const wordCountDisplay = document.getElementById('wordCount');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusElement = document.getElementById('status');
+        let isSubmitting = false;
+
+        aboutTextarea.addEventListener('input', function() {
+            const text = this.value.trim();
+            const wordCount = text.length > 0 ? text.split(/\s+/).filter(word => word.length > 0).length : 0;
+            wordCountDisplay.textContent = wordCount + ' words';
+            if (wordCount < 25 && wordCount > 0) {
+                wordCountDisplay.style.color = '#8a4a4a';
+            } else if (wordCount >= 25) {
+                wordCountDisplay.style.color = '#5a8a5a';
+            } else {
+                wordCountDisplay.style.color = '#6a6a78';
+            }
+        });
+
+        function disableSubmit() {
+            isSubmitting = true;
+            submitBtn.disabled = true;
+        }
+
+        function enableSubmit() {
+            isSubmitting = false;
+            submitBtn.disabled = false;
+        }
+
+        document.getElementById('applicationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (isSubmitting) {
                 return;
             }
-
-            statusElement.textContent = 'Отправка...';
-            statusElement.style.color = 'blue';
-
+            
+            const name = document.getElementById('name').value.trim();
+            const age = document.getElementById('age').value.trim();
+            const roblox = document.getElementById('roblox').value.trim();
+            const discord = document.getElementById('discord').value.trim();
+            const skills = document.getElementById('skills').value.trim();
+            const about = document.getElementById('about').value.trim();
+            const microphone = document.querySelector('input[name="microphone"]:checked')?.value || 'Not specified';
+            const experience = document.getElementById('experience').value.trim();
+            const games = document.getElementById('games').value.trim() || 'None provided';
+            
+            if (!name || !age || !roblox || !discord || !skills || !about || !experience) {
+                statusElement.textContent = 'All required fields must be completed.';
+                statusElement.style.color = '#b05050';
+                return;
+            }
+            
+            const wordCount = about.split(/\s+/).filter(word => word.length > 0).length;
+            if (wordCount < 25) {
+                statusElement.textContent = 'Personal statement must contain at least 25 words. Current count: ' + wordCount + '.';
+                statusElement.style.color = '#b05050';
+                return;
+            }
+            
+            disableSubmit();
+            
+            const message = [
+                'NEW META ARTS APPLICATION',
+                '',
+                'Full Name: ' + name,
+                'Age: ' + age,
+                'Roblox: ' + roblox,
+                'Discord: ' + discord,
+                'Fields of Expertise: ' + skills,
+                'Microphone: ' + microphone,
+                'Roblox Studio Experience: ' + experience,
+                'Published Projects: ' + games,
+                '',
+                'Personal Statement:',
+                about,
+                '',
+                'HWID: ' + userHWID
+            ].join('\n');
+            
+            statusElement.textContent = 'Submitting application...';
+            statusElement.style.color = '#9090a0';
+            
             try {
                 const response = await fetch('/send', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ text: text })
+                    body: JSON.stringify({ text: message })
                 });
-
+                
                 const data = await response.json();
-
+                
                 if (data.success) {
-                    statusElement.textContent = '✅ Сообщение успешно отправлено!';
-                    statusElement.style.color = 'green';
-                    document.getElementById('messageInput').value = '';
+                    statusElement.textContent = 'Application submitted successfully. Reloading in 10 seconds...';
+                    statusElement.style.color = '#6a9a6a';
+                    document.getElementById('applicationForm').reset();
+                    wordCountDisplay.textContent = '0 words';
+                    wordCountDisplay.style.color = '#6a6a78';
+                    
+                    let countdown = 10;
+                    const countdownInterval = setInterval(() => {
+                        countdown--;
+                        statusElement.textContent = 'Application submitted successfully. Reloading in ' + countdown + ' seconds...';
+                        if (countdown <= 0) {
+                            clearInterval(countdownInterval);
+                            window.location.reload();
+                        }
+                    }, 1000);
+                    
                 } else {
-                    statusElement.textContent = '❌ Ошибка отправки';
-                    statusElement.style.color = 'red';
+                    statusElement.textContent = 'Submission error. Please try again.';
+                    statusElement.style.color = '#b05050';
+                    enableSubmit();
                 }
             } catch (error) {
-                statusElement.textContent = '❌ Ошибка соединения с сервером';
-                statusElement.style.color = 'red';
+                statusElement.textContent = 'Connection error. Please check your network and try again.';
+                statusElement.style.color = '#b05050';
+                enableSubmit();
             }
-        }
+        });
     </script>
 </body>
 </html>
